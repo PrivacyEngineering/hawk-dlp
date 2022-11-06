@@ -1,5 +1,7 @@
 package io.hawk.dlp.common
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
 import java.util.*
 
 /**
@@ -25,5 +27,11 @@ data class Finding(
     /**
      * A list of sources / references to data that contains the [infoType].
      */
-    val occurrences: List<Occurrence>
+    val occurrences: List<Occurrence>,
+    /**
+     * A map of additional properties, that are not part of the finding spec itself.
+     */
+    @JsonAnyGetter
+    @JsonAnySetter
+    val additional: Map<String, Any?>? = null
 )

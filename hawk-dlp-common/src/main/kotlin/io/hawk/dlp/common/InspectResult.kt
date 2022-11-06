@@ -1,5 +1,7 @@
 package io.hawk.dlp.common
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.*
@@ -14,5 +16,11 @@ data class InspectResult(
     /**
      * The list of occurrences, grouped by info type (and possibly likelihood).
      */
-    val findings: List<Finding>
+    val findings: List<Finding>,
+    /**
+     * A map of additional properties, that are not part of the finding spec itself.
+     */
+    @JsonAnyGetter
+    @JsonAnySetter
+    val additional: Map<String, Any?>? = null
 ) : Result

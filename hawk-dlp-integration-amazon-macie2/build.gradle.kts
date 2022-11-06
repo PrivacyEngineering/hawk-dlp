@@ -24,6 +24,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation(project(":hawk-dlp-common"))
+    implementation(project(":hawk-dlp-integration"))
+    implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.332"))
+    implementation("com.amazonaws:aws-java-sdk-macie2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
 }

@@ -24,10 +24,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation(platform("com.google.cloud:libraries-bom:26.1.2"))
-    implementation("com.google.cloud:google-cloud-dlp")
     implementation(project(":hawk-dlp-common"))
     implementation(project(":hawk-dlp-integration"))
+    implementation(platform("com.google.cloud:libraries-bom:26.1.4"))
+    implementation("com.google.cloud:google-cloud-dlp")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
 }

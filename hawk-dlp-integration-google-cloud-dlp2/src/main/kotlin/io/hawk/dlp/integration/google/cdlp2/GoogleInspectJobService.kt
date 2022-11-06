@@ -1,16 +1,15 @@
 package io.hawk.dlp.integration.google.cdlp2
 
 import com.google.cloud.dlp.v2.DlpServiceClient
-import io.hawk.dlp.common.ColumnContainerOccurrence
-import io.hawk.dlp.common.ContainerOccurrence
-import io.hawk.dlp.common.Finding
-import io.hawk.dlp.common.InspectResult
+import com.google.privacy.dlp.v2.ContentLocation
+import io.hawk.dlp.common.*
 import io.hawk.dlp.integration.Job
 import io.hawk.dlp.integration.JobStatus
 import io.hawk.dlp.integration.TableDirectContent
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.math.max
 
 @Service
 class GoogleInspectJobService(
@@ -25,31 +24,15 @@ class GoogleInspectJobService(
             buildInspectRequest(tableContent)
         )
 
-        // First iteration on how to collect all useful data from Google DLP result.
         val findings = response.result.findingsList.map { finding ->
-            val likelihood = (finding.likelihoodValue / 5.0).toFloat()
-            val occurrences = finding.location.contentLocationsList.mapNotNull { location ->
-                if (location.hasRecordLocation()) {
-                    ColumnContainerOccurrence(
-                        location.containerName, // {project_id}:{dataset_id}.{table_id}
-                        location.recordLocation.fieldId.name
-                    )
-                } else if (location.hasDocumentLocation()) {
-                    ContainerOccurrence(
-                        location.containerName
-                    )
-                } else {
-                    // TODO: add more occurrences and expand this
-                    null
-                }
-            }
             Finding(
                 UUID.randomUUID(),
                 infoTypeService.translateGoogleInfoType(finding.infoType.name),
-                if (likelihood < 0) 0f else likelihood,
-                occurrences
+                convertLikelihood(finding.likelihoodValue),
+                finding.location.contentLocationsList.mapNotNull(::convertOccurrence)
             )
         }
+
         job.results = listOf(InspectResult(UUID.randomUUID(), LocalDateTime.now(), findings))
         job.status = JobStatus.COMPLETED
     }
@@ -72,6 +55,24 @@ class GoogleInspectJobService(
                     }
                 }
             }
+        }
+    }
+
+    private fun convertLikelihood(likelihood: Int) = max(0.0f, (likelihood / 5.0).toFloat())
+
+    private fun convertOccurrence(location: ContentLocation): Occurrence? {
+        return if (location.hasRecordLocation()) {
+            ColumnContainerOccurrence(
+                location.containerName, // {project_id}:{dataset_id}.{table_id}
+                location.recordLocation.fieldId.name
+            )
+        } else if (location.hasDocumentLocation()) {
+            ContainerOccurrence(
+                location.containerName
+            )
+        } else {
+            // TODO: add more occurrences and expand this
+            null
         }
     }
 }

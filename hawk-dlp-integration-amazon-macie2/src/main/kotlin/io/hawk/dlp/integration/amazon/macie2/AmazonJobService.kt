@@ -1,18 +1,13 @@
-package io.hawk.dlp.integration.google.cdlp2
+package io.hawk.dlp.integration.amazon.macie2
 
-import com.google.privacy.dlp.v2.*
-import io.hawk.dlp.common.*
 import io.hawk.dlp.integration.*
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
-class GoogleJobService(
-    private val inspectJobService: GoogleInspectJobService,
-    private val analyzeJobService: GoogleAnalyzeJobService
+class AmazonJobService(
+    private val inspectJobService: AmazonInspectJobService
 ) {
-
     @EventListener(JobCreatedEvent::class)
     fun jobCreated(job: Job) {
         job.status = JobStatus.IN_PROGRESS
@@ -29,14 +24,12 @@ class GoogleJobService(
             ?: error("Only direct job requests are supported")
 
         val jobTypeError =
-            "Only the following job types are supported for now: analyze + reference or inspect + table"
+            "Only the following job types are supported for now: inspect + file reference"
 
         if (request.resultTypes.size != 1) error(jobTypeError)
 
-        if (request.content is TableDirectContent && ResultType.INSPECT in request.resultTypes) {
-            inspectJobService.executeJob(job, request.content as TableDirectContent)
-        } else if (request.content is ReferenceContent && ResultType.ANALYZE in request.resultTypes) {
-            analyzeJobService.executeJob(job, request.content as ReferenceContent)
+        if (request.content is FileReferenceContent && ResultType.INSPECT in request.resultTypes) {
+            inspectJobService.executeJob(job, request.content as FileReferenceContent)
         } else {
             error(jobTypeError)
         }
