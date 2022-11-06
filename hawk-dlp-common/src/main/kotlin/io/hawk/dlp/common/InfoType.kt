@@ -35,7 +35,7 @@ enum class InfoType {
     PASSPORT_NUMBER, // G, A[ends with _PASSPORT_NUMBER]
     PASSWORD, // G
     PHONE_NUMBER, // G, A[ends with _PHONE_NUMBER]
-    STREET_ADDRESS, // G, A[ADDRESS]
+    ADDRESS, // G[STREET_ADDRESS], A
     SWIFT_CODE, // G
     TIME, // G
     URL, // G

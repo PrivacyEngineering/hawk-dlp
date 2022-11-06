@@ -9,6 +9,7 @@ class InfoTypeService {
         "AWS_CREDENTIALS", "GCP_CREDENTIALS", "AZURE_CREDENTIALS" -> InfoType.CREDENTIALS
         "LOCATION_COORDINATES" -> InfoType.LOCATION
         "FEMALE_NAME", "FIRST_NAME", "MALE_NAME", "LAST_NAME" -> InfoType.NAME
+        "STREET_ADDRESS" -> InfoType.ADDRESS
         else -> InfoType.values().firstOrNull { it.name == type.uppercase() } ?: InfoType.UNKNOWN
     }
 }

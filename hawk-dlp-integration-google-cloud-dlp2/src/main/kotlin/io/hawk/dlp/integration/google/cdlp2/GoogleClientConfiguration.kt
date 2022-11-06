@@ -5,9 +5,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class GoogleCredentialsConfiguration {
+class GoogleClientConfiguration {
 
     @Bean
-    // TODO: provide credentials
     fun dlpClient(): DlpServiceClient = DlpServiceClient.create()
 }

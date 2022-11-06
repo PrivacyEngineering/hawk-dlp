@@ -6,9 +6,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Service
 
 @Service
-class AmazonCredentialsConfiguration {
+class AmazonClientConfiguration {
 
     @Bean
-    fun macie2Client(): AmazonMacie2 = AmazonMacie2Client.builder()
-        .build()
+    fun macie2Client(): AmazonMacie2 = AmazonMacie2Client.builder().build()
 }
