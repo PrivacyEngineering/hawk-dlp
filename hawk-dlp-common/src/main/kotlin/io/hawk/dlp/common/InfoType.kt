@@ -41,4 +41,5 @@ enum class InfoType {
     URL, // G
     VEHICLE_IDENTIFICATION_NUMBER, // G
     WEAK_PASSWORD_HASH, // G
+    UNKNOWN // Fallback InfoType, if InfoType can't be mapped
 }

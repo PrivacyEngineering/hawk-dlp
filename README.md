@@ -6,5 +6,5 @@ implementation. The project consists of the following modules:
 
 - **hawk-dlp-common** module containing the abstract dlp schema with Jackson JSON mappers
 - **hawk-dlp-integration** module containing job abstractions and common spring utilities
-- **hawk-dlp-integration-google-cloud-dlp** module containing the schema and endpoint implementation for CDLP
-- **hawk-dlp-integration-amazon-macie2** module containing the schema and endpoint implementation for Macie2
+- **hawk-dlp-integration-google-cloud-dlp2** module containing the schema and endpoint implementation for CDLP V2
+- **hawk-dlp-integration-amazon-macie2** module containing the schema and endpoint implementation for Macie V2

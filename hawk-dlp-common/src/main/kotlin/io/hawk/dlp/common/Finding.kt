@@ -8,7 +8,7 @@ import java.util.*
  * source, e.g. table-column. All [Occurrence]s of a Finding are homogenous among its [InfoType],
  * which represents the type of data identified at this specific source, e.g. a E-Mail address.
  */
-class Finding(
+data class Finding(
     /**
      * Unique identifier for a specific finding.
      */

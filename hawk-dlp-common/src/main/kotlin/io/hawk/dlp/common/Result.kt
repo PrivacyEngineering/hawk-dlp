@@ -1,5 +1,7 @@
 package io.hawk.dlp.common
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -15,6 +17,15 @@ import java.util.UUID
  * by many DLPs.
  * @see AnalyzeResult For the result of an e.g. k-anonymity analysis.
  */
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"
+)
+@JsonSubTypes(
+    JsonSubTypes.Type(value = InspectResult::class, name = "inspect"),
+    JsonSubTypes.Type(value = AnalyzeResult::class, name = "analyze")
+)
 interface Result {
     /**
      * Unique identifier of this result.
