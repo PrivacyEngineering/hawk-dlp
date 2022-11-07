@@ -13,11 +13,14 @@ implementation. The project consists of the following modules:
 
 ## TODO
 
-- [ ] Add integration tests
-- [ ] Add integration specific readme's for deployment, authentication etc.
-- [ ] Generate OpenAPI spec (SpringDoc)
-- [ ] Make `ColumnContainerOccurrence` only once per table-column tuple OR
+- [X] Make `ColumnContainerOccurrence` only once per table-column tuple OR
   add `CellContainerOccurrence`
-- [ ] Test GCP DLP integration with real GCP account
+- [X] Handle Macie / DLP errors (extract them via. API)
+- [X] Handle multi page results in Macie / GCP?
 - [ ] Add logging
+- [ ] Generate OpenAPI spec (SpringDoc)
+- [ ] Add integration tests
+- [ ] Test GCP DLP integration with real GCP account
+- [ ] Add CI pipeline
+- [ ] Add integration specific readme's for deployment, authentication etc.
 - [ ] Remove memory leak in `JobService`

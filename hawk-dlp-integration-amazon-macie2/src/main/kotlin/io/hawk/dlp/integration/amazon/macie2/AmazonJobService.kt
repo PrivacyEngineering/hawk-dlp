@@ -26,9 +26,11 @@ class AmazonJobService(
         val jobTypeError =
             "Only the following job types are supported for now: inspect + file reference"
 
-        if (request.resultTypes.size != 1) error(jobTypeError)
+        if (request.resultFormats.size != 1) error(jobTypeError)
 
-        if (request.content is FileReferenceContent && ResultType.INSPECT in request.resultTypes) {
+        if (request.content is FileReferenceContent &&
+            request.resultFormats.first() is InspectResultFormat
+        ) {
             inspectJobService.executeJob(job, request.content as FileReferenceContent)
         } else {
             error(jobTypeError)

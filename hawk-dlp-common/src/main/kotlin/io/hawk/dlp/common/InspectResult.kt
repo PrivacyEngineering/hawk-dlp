@@ -18,6 +18,13 @@ data class InspectResult(
      */
     val findings: List<Finding>,
     /**
+     * If true, there might be more [findings] and the findings returned are an arbitrary subset of
+     * all findings. The findings list might be truncated because the input items were too large, or
+     * because the server reached the maximum amount of resources allowed for a single API call.
+     * For best results, divide the input into smaller batches.
+     */
+    val findingsTruncated: Boolean,
+    /**
      * A map of additional properties, that are not part of the finding spec itself.
      */
     @JsonAnyGetter

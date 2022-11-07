@@ -3,6 +3,7 @@ package io.hawk.dlp.integration.google.cdlp2
 import com.google.cloud.dlp.v2.DlpServiceClient
 import com.google.privacy.dlp.v2.ContentLocation
 import io.hawk.dlp.common.*
+import io.hawk.dlp.integration.InspectResultFormat
 import io.hawk.dlp.integration.Job
 import io.hawk.dlp.integration.JobStatus
 import io.hawk.dlp.integration.TableDirectContent
@@ -24,16 +25,32 @@ class GoogleInspectJobService(
             buildInspectRequest(tableContent)
         )
 
-        val findings = response.result.findingsList.map { finding ->
-            Finding(
-                UUID.randomUUID(),
-                infoTypeService.translateGoogleInfoType(finding.infoType.name),
-                convertLikelihood(finding.likelihoodValue),
-                finding.location.contentLocationsList.mapNotNull(::convertOccurrence)
-            )
-        }
+        val columnFindings = response.result
+            .findingsList
+            .map { finding ->
+                Finding(
+                    UUID.randomUUID(),
+                    infoTypeService.translateGoogleInfoType(finding.infoType.name),
+                    convertLikelihood(finding.likelihoodValue),
+                    finding.location
+                        .contentLocationsList
+                        .mapNotNull(::convertOccurrence)
+                        .distinctBy { it.container + it.column }
+                )
+            }
+            .filter { it.occurrences.isNotEmpty() }
 
-        job.results = listOf(InspectResult(UUID.randomUUID(), LocalDateTime.now(), findings))
+        job.results = job.request.resultFormats
+            .mapNotNull { it as? InspectResultFormat }
+            .map { it.copy(id = UUID.randomUUID()) }
+            .associateWith {
+                InspectResult(
+                    it.id!!,
+                    LocalDateTime.now(),
+                    columnFindings,
+                    response.result.findingsTruncated
+                )
+            }
         job.status = JobStatus.COMPLETED
     }
 
@@ -60,16 +77,9 @@ class GoogleInspectJobService(
 
     private fun convertLikelihood(likelihood: Int) = max(0.0f, (likelihood / 5.0).toFloat())
 
-    private fun convertOccurrence(location: ContentLocation): Occurrence? {
+    private fun convertOccurrence(location: ContentLocation): ColumnContainerOccurrence? {
         return if (location.hasRecordLocation()) {
-            ColumnContainerOccurrence(
-                location.containerName, // {project_id}:{dataset_id}.{table_id}
-                location.recordLocation.fieldId.name
-            )
-        } else if (location.hasDocumentLocation()) {
-            ContainerOccurrence(
-                location.containerName
-            )
+            GoogleColumnContainerOccurrence(location)
         } else {
             // TODO: add more occurrences and expand this
             null

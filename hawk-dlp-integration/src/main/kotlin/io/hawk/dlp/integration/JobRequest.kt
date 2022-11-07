@@ -13,13 +13,13 @@ import jakarta.validation.constraints.Size
  */
 abstract class JobRequest(
     /**
-     * A list of results, the job should return.
+     * Contains a list of results that should be produced by this job.
      */
-    @Size(min = 1)
-    val resultTypes: List<ResultType>,
+    @field:Size(min = 1)
+    val resultFormats: List<ResultFormat>,
     /**
      * The content that should be analyzed by the DLP implementation.
      */
-    @NotNull
+    @field:NotNull
     val content: Content,
 )

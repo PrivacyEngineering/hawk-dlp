@@ -1,13 +1,14 @@
 package io.hawk.dlp.common
 
 /**
- * A [Occurrence] that provides a locator by container and column.
- * Note: The container must be a table based container, that can be treated as such by the
- * underlying DLP implementation.
+ * A [ContainerOccurrence] that provides a data locator for columns inside a table-based container.
+ * Such a container could be database table or a csv file for example.
  *
- * @see ContainerOccurrence For the container specification.
+ * @see ContainerOccurrence Which describe the location of the table / file itself.
  */
-class ColumnContainerOccurrence(
-    container: String,
+interface ColumnContainerOccurrence : ContainerOccurrence {
+    /**
+     * Name of the column of the occurrence inside the table.
+     */
     val column: String
-) : ContainerOccurrence(container)
+}

@@ -31,11 +31,15 @@ class GoogleJobService(
         val jobTypeError =
             "Only the following job types are supported for now: analyze + reference or inspect + table"
 
-        if (request.resultTypes.size != 1) error(jobTypeError)
+        if (request.resultFormats.size != 1) error(jobTypeError)
 
-        if (request.content is TableDirectContent && ResultType.INSPECT in request.resultTypes) {
+        if (request.content is TableDirectContent &&
+            request.resultFormats.first() is InspectResultFormat
+        ) {
             inspectJobService.executeJob(job, request.content as TableDirectContent)
-        } else if (request.content is ReferenceContent && ResultType.ANALYZE in request.resultTypes) {
+        } else if (request.content is ReferenceContent &&
+            request.resultFormats.first() is AnalyzeResultFormat
+        ) {
             analyzeJobService.executeJob(job, request.content as ReferenceContent)
         } else {
             error(jobTypeError)

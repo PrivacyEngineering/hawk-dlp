@@ -2,10 +2,10 @@ package io.hawk.dlp.integration.amazon.macie2
 
 import com.amazonaws.services.macie2.AmazonMacie2
 import com.amazonaws.services.macie2.model.*
-import io.hawk.dlp.common.ColumnContainerOccurrence
 import io.hawk.dlp.common.Finding
 import io.hawk.dlp.common.InspectResult
 import io.hawk.dlp.integration.FileReferenceContent
+import io.hawk.dlp.integration.InspectResultFormat
 import io.hawk.dlp.integration.Job
 import io.hawk.dlp.integration.JobStatus
 import org.springframework.scheduling.annotation.Scheduled
@@ -52,17 +52,26 @@ class AmazonInspectJobService(
             macieJobs.toMap()
         }
 
-        localMacieJobs.forEach {
-            val status = getMacieJobStatus(it.key)
-            val cancelled = status == MacieJobStatus.CANCELLED.name
-            val complete = status == MacieJobStatus.COMPLETE.name
-
-            if (cancelled || complete) macieJobsLock.withLock {
-                macieJobs.remove(it.key)
+        localMacieJobs.forEach { (macieJobId, job) ->
+            try {
+                checkMacieJob(job, macieJobId)
+            } catch (throwable: Throwable) {
+                job.error = throwable.message
+                job.status = JobStatus.FAILED
             }
-            if (cancelled) processCancelledMacieJob(it.value)
-            if (complete) processCompleteMacieJob(it.value, it.key)
         }
+    }
+
+    private fun checkMacieJob(job: Job, macieJobId: String) {
+        val status = getMacieJobStatus(macieJobId)
+        val cancelled = status == MacieJobStatus.CANCELLED.name
+        val complete = status == MacieJobStatus.COMPLETE.name
+
+        if (cancelled || complete) macieJobsLock.withLock {
+            macieJobs.remove(macieJobId)
+        }
+        if (cancelled) processCancelledMacieJob(job)
+        if (complete) processCompleteMacieJob(job, macieJobId)
     }
 
     private fun getMacieJobStatus(macieJobId: String) = macie2Client
@@ -78,13 +87,12 @@ class AmazonInspectJobService(
     }
 
     private fun processCompleteMacieJob(job: Job, macieJobId: String) {
-        job.results = listOf(
-            InspectResult(
-                UUID.randomUUID(),
-                LocalDateTime.now(),
-                getFindings(listFindingsIds(macieJobId))
-            )
-        )
+        val inspectResult = getFindings(listFindingsIds(macieJobId))
+
+        job.results = job.request.resultFormats
+            .mapNotNull { it as? InspectResultFormat }
+            .map { it.copy(id = UUID.randomUUID()) }
+            .associateWith { inspectResult.copy(id = it.id!!) }
         job.status = JobStatus.COMPLETED
     }
 
@@ -100,39 +108,46 @@ class AmazonInspectJobService(
         return macie2Client.listFindings(request).findingIds
     }
 
-    private fun getFindings(findingsIds: List<String>): List<Finding> {
-        val request = GetFindingsRequest()
-            .withFindingIds(findingsIds)
-        return macie2Client.getFindings(request).findings.flatMap {
-            val containerName = it.classificationDetails.detailedResultsLocation
+    private fun getFindings(findingsIds: List<String>): InspectResult {
+        val response = macie2Client.getFindings(GetFindingsRequest().withFindingIds(findingsIds))
+        var additionalOccurrences = false
+        val findings = response.findings.flatMap {
+            val resourcesAffected = it.resourcesAffected
             val severity = it.severity.score
+            if (it.classificationDetails.result.additionalOccurrences)
+                additionalOccurrences = true
 
             it.classificationDetails.result.sensitiveData.flatMap { data ->
                 data.detections.map { detection ->
                     convertFinding(
-                        containerName,
+                        resourcesAffected,
                         severity,
                         detection
                     )
                 }
             }
-        }
+        }.filter { it.occurrences.isNotEmpty() }
+
+        return InspectResult(
+            UUID.randomUUID(),
+            LocalDateTime.now(),
+            findings,
+            additionalOccurrences
+        )
     }
 
     private fun convertFinding(
-        containerName: String,
+        resourcesAffected: ResourcesAffected,
         severity: Long,
         detection: DefaultDetection
     ) = Finding(
         UUID.randomUUID(),
         infoTypeService.translateAmazonInfoType(detection.type),
         null,
-        detection.occurrences.cells.map {
-            ColumnContainerOccurrence(
-                containerName,
-                it.columnName
-            )
-        },
+        detection.occurrences
+            .cells
+            .map { AmazonColumnContainerOccurrence(resourcesAffected, it) }
+            .distinctBy { it.container + it.column },
         mapOf("severity" to severity)
     )
 }

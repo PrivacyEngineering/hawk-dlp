@@ -2,6 +2,7 @@ package io.hawk.dlp.integration
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.hawk.dlp.common.Result
 import java.time.LocalDateTime
 import java.util.UUID
@@ -24,7 +25,7 @@ data class Job(
      * The request that was used to create this job.
      * Encapsulates the input data.
      */
-    @JsonIgnore
+    @field:JsonIgnore
     val request: JobRequest,
     /**
      * The status of this job.
@@ -34,10 +35,14 @@ data class Job(
      * The list result of results for this job.
      * Present when [status] is [JobStatus.COMPLETED].
      */
-    var results: List<Result>? = null,
+    @field:JsonIgnore
+    var results: Map<ResultFormat, Result>? = null,
     /**
      * The error of this job.
      * Present when [status] is [JobStatus.FAILED].
      */
     var error: String? = null
-)
+) {
+    @get:JsonProperty("results", access = JsonProperty.Access.READ_ONLY)
+    val resultsFormats: List<ResultFormat> get() = results?.keys?.toList() ?: emptyList()
+}
