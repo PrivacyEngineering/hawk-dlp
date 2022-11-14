@@ -1,0 +1,38 @@
+{
+  "type": "inspect",
+  "id": "4b6aa385-4fa3-40f0-9b98-a0d55ed85074",
+  "timestamp": "2022-11-14T05:02:19.603496",
+  "findings": [
+    {
+      "id": "947f675b-5392-4da4-8ee5-2e4cc45c7dd6",
+      "infoType": "PHONE_NUMBER",
+      "likelihood": null,
+      "occurrences": [
+        {
+          "container": "s3://macie-test-7789/macie-test-7789/testmacie.csv",
+          "column": "telephone",
+          "volume": "macie-test-7789",
+          "filePath": "macie-test-7789/testmacie.csv",
+          "type": "container-column"
+        }
+      ],
+      "severity": 2
+    },
+    {
+      "id": "14642524-5948-4598-98bc-b95d313d8e57",
+      "infoType": "NAME",
+      "likelihood": null,
+      "occurrences": [
+        {
+          "container": "s3://macie-test-7789/macie-test-7789/testmacie.csv",
+          "column": "name",
+          "volume": "macie-test-7789",
+          "filePath": "macie-test-7789/testmacie.csv",
+          "type": "container-column"
+        }
+      ],
+      "severity": 2
+    }
+  ],
+  "findingsTruncated": false
+}

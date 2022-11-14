@@ -1,0 +1,49 @@
+{
+  "type": "inspect",
+  "id": "6abe9562-f5ca-4133-adab-23fd4de7e0fc",
+  "timestamp": "2022-11-14T03:49:44.320514",
+  "findings": [
+    {
+      "id": "e43ce876-8dba-4578-abda-c980aa021b26",
+      "infoType": "NAME",
+      "likelihood": 0.5599999999999999,
+      "occurrences": [
+        {
+          "container": "",
+          "column": "name",
+          "type": "container-column"
+        },
+        {
+          "container": "",
+          "column": "email",
+          "type": "container-column"
+        }
+      ]
+    },
+    {
+      "id": "8382f215-7505-4048-b0fa-f4d29c5595a6",
+      "infoType": "EMAIL_ADDRESS",
+      "likelihood": 1,
+      "occurrences": [
+        {
+          "container": "",
+          "column": "email",
+          "type": "container-column"
+        }
+      ]
+    },
+    {
+      "id": "4943036a-241d-405f-a470-7b6f731bcffc",
+      "infoType": "PHONE_NUMBER",
+      "likelihood": 1,
+      "occurrences": [
+        {
+          "container": "",
+          "column": "telephone",
+          "type": "container-column"
+        }
+      ]
+    }
+  ],
+  "findingsTruncated": false
+}

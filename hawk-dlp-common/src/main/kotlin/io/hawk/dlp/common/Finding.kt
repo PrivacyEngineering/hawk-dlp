@@ -23,7 +23,7 @@ data class Finding(
      * A value between 0 and 1, where a bigger value indicates a bigger likelihood, that the info
      * type actually matches. If no value is given TODO
      */
-    val likelihood: Float?,
+    val likelihood: Double?,
     /**
      * A list of sources / references to data that contains the [infoType].
      */
@@ -31,7 +31,7 @@ data class Finding(
     /**
      * A map of additional properties, that are not part of the finding spec itself.
      */
-    @JsonAnyGetter
-    @JsonAnySetter
+    @get:JsonAnyGetter
+    @get:JsonAnySetter
     val additional: Map<String, Any?>? = null
 )

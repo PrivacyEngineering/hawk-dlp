@@ -13,14 +13,13 @@ class GoogleJobService(
     private val analyzeJobService: GoogleAnalyzeJobService
 ) {
 
-    @EventListener(JobCreatedEvent::class)
-    fun jobCreated(job: Job) {
-        job.status = JobStatus.IN_PROGRESS
+    @EventListener
+    fun jobCreated(event: JobCreatedEvent) {
+        event.job.begin()
         try {
-            handleJobCreated(job)
+            handleJobCreated(event.job)
         } catch (throwable: Throwable) {
-            job.status = JobStatus.FAILED
-            job.error = throwable.message
+            event.job.failed(throwable, "Google Job failed")
         }
     }
 
@@ -31,14 +30,14 @@ class GoogleJobService(
         val jobTypeError =
             "Only the following job types are supported for now: analyze + reference or inspect + table"
 
-        if (request.resultFormats.size != 1) error(jobTypeError)
+        if (request.goals.size != 1) error(jobTypeError)
 
         if (request.content is TableDirectContent &&
-            request.resultFormats.first() is InspectResultFormat
+            request.goals.first() is InspectGoal
         ) {
             inspectJobService.executeJob(job, request.content as TableDirectContent)
         } else if (request.content is ReferenceContent &&
-            request.resultFormats.first() is AnalyzeResultFormat
+            request.goals.first() is AnalyzeGoal
         ) {
             analyzeJobService.executeJob(job, request.content as ReferenceContent)
         } else {

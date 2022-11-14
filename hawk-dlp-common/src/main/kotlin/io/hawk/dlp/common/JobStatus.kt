@@ -1,4 +1,4 @@
-package io.hawk.dlp.integration
+package io.hawk.dlp.common
 
 /**
  * Represents a job status, that can be fetched.

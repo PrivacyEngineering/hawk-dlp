@@ -1,7 +1,7 @@
 package io.hawk.dlp.integration.google.cdlp2
 
-import io.hawk.dlp.integration.Job
-import io.hawk.dlp.integration.ReferenceContent
+import io.hawk.dlp.common.Job
+import io.hawk.dlp.common.ReferenceContent
 import org.springframework.stereotype.Service
 
 @Service

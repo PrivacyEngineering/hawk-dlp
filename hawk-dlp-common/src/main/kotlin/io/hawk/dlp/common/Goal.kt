@@ -1,6 +1,5 @@
-package io.hawk.dlp.integration
+package io.hawk.dlp.common
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
@@ -16,10 +15,10 @@ import java.util.UUID
     property = "type"
 )
 @JsonSubTypes(
-    JsonSubTypes.Type(value = InspectResultFormat::class, name = "inspect"),
+    JsonSubTypes.Type(value = InspectGoal::class, name = "inspect"),
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
-interface ResultFormat {
+interface Goal {
     @get:JsonProperty(access = JsonProperty.Access.READ_ONLY)
     val id: UUID?
 }

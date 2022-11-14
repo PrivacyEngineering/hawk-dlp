@@ -1,11 +1,7 @@
-package io.hawk.dlp.integration
-
-import io.hawk.dlp.common.Occurrence
-import io.hawk.dlp.common.InspectResult
-import io.hawk.dlp.common.Finding
+package io.hawk.dlp.common
 
 /**
- * Used in [InspectResultFormat]. To specify the result format for inspect jobs,
+ * Used in [InspectGoal]. To specify the result format for inspect jobs,
  * we can have different modes of [Occurrence] types. Since the structure of a [InspectResult]
  * contains a list of [Finding]s, which internally contain a list of [Occurrence]s, we can specify
  * the type of the findings. [Occurrence]s not matching the type will be filtered out.

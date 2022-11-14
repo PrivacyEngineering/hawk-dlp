@@ -1,5 +1,7 @@
 package io.hawk.dlp.common
 
+import com.fasterxml.jackson.annotation.JsonInclude
+
 /**
  * A [Occurrence] that provides a locator to specific container name.
  * For generalized vendor-independent identification, we provide the following patterns:
@@ -9,7 +11,10 @@ package io.hawk.dlp.common
  * Properties of this class try to describe, the location of the data in a vendor-agnostic way.
  * Subclasses may add properties to locate the specific data inside this table / file etc.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 interface ContainerOccurrence : Occurrence {
+    override val type: String get() = "container"
+
     /**
      * A vendor specific locator for the container represented as a string.
      * e.g. gs://test-bucket/folder1/test.csv, or gproject.testdb.users

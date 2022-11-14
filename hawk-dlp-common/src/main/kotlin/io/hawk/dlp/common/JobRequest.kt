@@ -1,5 +1,6 @@
-package io.hawk.dlp.integration
+package io.hawk.dlp.common
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
@@ -13,13 +14,25 @@ import jakarta.validation.constraints.Size
  */
 abstract class JobRequest(
     /**
+     * Type of request. E.g. direct. Important for serialization / deserialization.
+     */
+    @field:JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    val type: String,
+
+    /**
      * Contains a list of results that should be produced by this job.
      */
     @field:Size(min = 1)
-    val resultFormats: List<ResultFormat>,
+    val goals: List<Goal>,
     /**
      * The content that should be analyzed by the DLP implementation.
      */
     @field:NotNull
     val content: Content,
+    /**
+     * Optional reference that should describe the origin / the source of the data that gets analyzed.
+     * Helpful in case of [DirectContent] or when analyzing OLAP data and providing a reference to the OLTP.
+     */
+    @field:Size(max = 255)
+    val sourceReference: String? = null,
 )

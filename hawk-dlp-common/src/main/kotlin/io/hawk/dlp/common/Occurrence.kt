@@ -11,13 +11,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
  * @see ColumnContainerOccurrence For a location, that consists of the container name and the column name
  * in case of a table-based container.
  */
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "type"
-)
-@JsonSubTypes(
-    JsonSubTypes.Type(value = ContainerOccurrence::class, name = "container"),
-    JsonSubTypes.Type(value = ColumnContainerOccurrence::class, name = "container-column")
-)
-interface Occurrence
+interface Occurrence {
+    /**
+     * Type of Occurrence. Used for serialization / deserialization, to determine the format / available
+     * properties.
+     */
+    val type: String
+}

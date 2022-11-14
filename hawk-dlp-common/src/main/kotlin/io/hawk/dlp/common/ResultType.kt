@@ -1,4 +1,4 @@
-package io.hawk.dlp.integration
+package io.hawk.dlp.common
 
 import io.hawk.dlp.common.Result
 import io.hawk.dlp.common.InspectResult

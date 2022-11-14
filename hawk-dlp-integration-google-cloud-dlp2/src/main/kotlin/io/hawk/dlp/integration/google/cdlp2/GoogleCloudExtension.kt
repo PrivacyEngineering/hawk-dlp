@@ -49,6 +49,7 @@ fun Value.Builder.setValue(value: Any?) {
                 stringValue = value
             }
         }
+
         is Int -> integerValue = value.toLong()
         is Long -> integerValue = value
         is Float -> floatValue = value.toDouble()

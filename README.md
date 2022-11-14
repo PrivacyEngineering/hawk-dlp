@@ -17,10 +17,10 @@ implementation. The project consists of the following modules:
   add `CellContainerOccurrence`
 - [X] Handle Macie / DLP errors (extract them via. API)
 - [X] Handle multi page results in Macie / GCP?
-- [ ] Add logging
+- [X] Add logging
+- [X] Test GCP DLP integration with real GCP account
 - [ ] Generate OpenAPI spec (SpringDoc)
-- [ ] Add integration tests
-- [ ] Test GCP DLP integration with real GCP account
 - [ ] Add CI pipeline
 - [ ] Add integration specific readme's for deployment, authentication etc.
+- [ ] Add integration tests
 - [ ] Remove memory leak in `JobService`

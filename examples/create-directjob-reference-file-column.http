@@ -1,0 +1,19 @@
+POST http://127.0.0.1:8080/api/v1/jobs/direct
+Content-Type: application/json
+Accept: application/json
+
+{
+  "goals": [
+    {
+      "type": "inspect",
+      "occurrenceType": "COLUMN"
+    }
+  ],
+  "content": {
+    "type": "reference-file",
+    "files": [
+      "s3://macie-test-7789/testmacie.csv"
+    ]
+  },
+  "sourceReference": "user-service"
+}

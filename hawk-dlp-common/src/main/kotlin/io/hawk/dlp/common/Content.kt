@@ -1,4 +1,4 @@
-package io.hawk.dlp.integration
+package io.hawk.dlp.common
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type
@@ -11,11 +11,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
-    property = "kind"
+    property = "type",
 )
 @JsonSubTypes(
-    Type(value = DirectContent::class, name = "direct"),
-    Type(value = ReferenceContent::class, name = "reference")
+    Type(value = TableDirectContent::class, name = "direct-table"),
+    Type(value = FileReferenceContent::class, name = "reference-file")
 )
 interface Content {
     /**

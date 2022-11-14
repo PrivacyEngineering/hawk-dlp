@@ -7,6 +7,8 @@ package io.hawk.dlp.common
  * @see ContainerOccurrence Which describe the location of the table / file itself.
  */
 interface ColumnContainerOccurrence : ContainerOccurrence {
+    override val type get() = "container-column"
+
     /**
      * Name of the column of the occurrence inside the table.
      */

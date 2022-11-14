@@ -1,0 +1,38 @@
+POST http://127.0.0.1:8080/api/v1/jobs/direct
+Content-Type: application/json
+Accept: application/json
+
+{
+  "goals": [
+    {
+      "type": "inspect",
+      "occurrenceType": "COLUMN"
+    }
+  ],
+  "content": {
+    "type": "direct-table",
+    "headers": [
+      "name",
+      "email",
+      "telephone"
+    ],
+    "cells": [
+      [
+        "John Doe",
+        "john@gmail.com",
+        "+49 3987 73456"
+      ],
+      [
+        "Max Mustermann",
+        "test@sdfsfdd.de",
+        "0800579343"
+      ],
+      [
+        "Andi Wand",
+        "andi@gmx.de",
+        "01701492567"
+      ]
+    ]
+  },
+  "sourceReference": "user-service"
+}

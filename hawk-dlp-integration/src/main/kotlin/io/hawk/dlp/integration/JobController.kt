@@ -1,5 +1,7 @@
 package io.hawk.dlp.integration
 
+import io.hawk.dlp.common.DirectJobRequest
+import io.hawk.dlp.common.Job
 import io.hawk.dlp.common.Result
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -14,15 +16,23 @@ import java.util.*
 class JobController(
     private val jobService: JobService
 ) {
-    @PostMapping("/api/v1/jobs/direct")
+    @PostMapping("/direct")
     fun createDirectJob(@Valid @RequestBody request: DirectJobRequest): Job =
         jobService.createJob(request)
 
-    @GetMapping("/api/v1/jobs/{id}")
-    fun describeJob(@PathVariable id: UUID): Job =
-        jobService.getJob(id)
+    @GetMapping
+    fun listJobs(): List<Job> = jobService.listJobs()
 
-    @GetMapping("/api/v1/jobs/{id}/results/{resultId}")
+    @GetMapping("/{id}")
+    fun describeJob(@PathVariable id: UUID) = jobService.getJob(id)
+
+    @GetMapping("/{id}/request")
+    fun showJobRequest(@PathVariable id: UUID) = jobService.getJob(id).request
+
+    @GetMapping("/{id}/results")
+    fun listJobResultFormats(@PathVariable id: UUID) = jobService.getJob(id).fulfilledGoals
+
+    @GetMapping("/{id}/results/{resultId}")
     fun getJobResult(@PathVariable id: UUID, @PathVariable resultId: UUID): Result =
         jobService
             .getJob(id)

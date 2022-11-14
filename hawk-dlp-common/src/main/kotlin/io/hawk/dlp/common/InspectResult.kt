@@ -27,7 +27,7 @@ data class InspectResult(
     /**
      * A map of additional properties, that are not part of the finding spec itself.
      */
-    @JsonAnyGetter
-    @JsonAnySetter
+    @get:JsonAnyGetter
+    @get:JsonAnySetter
     val additional: Map<String, Any?>? = null
 ) : Result

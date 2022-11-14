@@ -1,4 +1,4 @@
-package io.hawk.dlp.integration
+package io.hawk.dlp.common
 
 import jakarta.validation.constraints.Size
 

@@ -1,5 +1,6 @@
 package io.hawk.dlp.integration.amazon.macie2
 
+import io.hawk.dlp.common.*
 import io.hawk.dlp.integration.*
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
@@ -8,14 +9,13 @@ import org.springframework.stereotype.Service
 class AmazonJobService(
     private val inspectJobService: AmazonInspectJobService
 ) {
-    @EventListener(JobCreatedEvent::class)
-    fun jobCreated(job: Job) {
-        job.status = JobStatus.IN_PROGRESS
+    @EventListener
+    fun jobCreated(event: JobCreatedEvent) {
+        event.job.begin()
         try {
-            handleJobCreated(job)
+            handleJobCreated(event.job)
         } catch (throwable: Throwable) {
-            job.status = JobStatus.FAILED
-            job.error = throwable.message
+            event.job.failed(throwable, "Amazon Job Failed")
         }
     }
 
@@ -26,10 +26,10 @@ class AmazonJobService(
         val jobTypeError =
             "Only the following job types are supported for now: inspect + file reference"
 
-        if (request.resultFormats.size != 1) error(jobTypeError)
+        if (request.goals.size != 1) error(jobTypeError)
 
         if (request.content is FileReferenceContent &&
-            request.resultFormats.first() is InspectResultFormat
+            request.goals.first() is InspectGoal
         ) {
             inspectJobService.executeJob(job, request.content as FileReferenceContent)
         } else {
