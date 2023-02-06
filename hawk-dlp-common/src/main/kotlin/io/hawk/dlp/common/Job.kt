@@ -53,9 +53,13 @@ data class Job(
     @get:JsonProperty("results", access = JsonProperty.Access.READ_ONLY)
     val fulfilledGoals: List<Goal> get() = results?.keys?.toList() ?: emptyList()
 
+    @Transient
+    val statusListeners = mutableListOf<(job: Job) -> Unit>()
+
     fun begin() {
         logger.debug("Job[{}] Begin executing", id)
         status = JobStatus.IN_PROGRESS
+        notifyListeners()
     }
 
     fun completed(results: Map<Goal, Result>) {
@@ -66,6 +70,7 @@ data class Job(
         }
         this.results = results
         status = JobStatus.COMPLETED
+        notifyListeners()
     }
 
     fun failed(throwable: Throwable, errorPrefix: String? = null) {
@@ -76,11 +81,23 @@ data class Job(
             logger.info("Job[{}] failed: {}", id, error)
         }
         status = JobStatus.FAILED
+        notifyListeners()
     }
 
     fun failed(error: String) {
         logger.info("Job[{}] failed: {}", id, error)
         this.error = error
         status = JobStatus.FAILED
+        notifyListeners()
+    }
+
+    @Synchronized
+    fun addListener(listener: (job: Job) -> Unit) {
+        statusListeners.add(listener)
+    }
+
+    @Synchronized
+    private fun notifyListeners() {
+        statusListeners.forEach { it(this) }
     }
 }
