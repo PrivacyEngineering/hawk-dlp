@@ -17,19 +17,11 @@ dependencies {
 }
 
 publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/PrivacyEngineering/hawk-dlp")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
-            }
-        }
-    }
-    // gradle hawk-dlp-common:publish
     publications {
         register<MavenPublication>("gpr") {
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
             from(components["java"])
         }
     }
