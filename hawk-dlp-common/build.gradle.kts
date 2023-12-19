@@ -4,7 +4,6 @@ plugins {
 }
 
 group = "io.hawk"
-version = "1.0.0"
 
 repositories {
     mavenCentral()
