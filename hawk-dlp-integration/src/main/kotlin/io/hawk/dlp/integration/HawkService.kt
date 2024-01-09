@@ -47,5 +47,14 @@ class HawkService {
             .bodyToMono(Void::class.java)
             .subscribeOn(Schedulers.boundedElastic())
             .subscribe()
+        job.results?.values?.forEach {
+            client.post()
+                .uri("/api/dlp/${job.id}/result")
+                .bodyValue(it)
+                .retrieve()
+                .bodyToMono(Void::class.java)
+                .subscribeOn(Schedulers.boundedElastic())
+                .subscribe()
+        }
     }
 }
