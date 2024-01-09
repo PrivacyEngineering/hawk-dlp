@@ -27,7 +27,7 @@ class JobController(
     fun describeJob(@PathVariable id: UUID) = jobService.getJob(id)
 
     @GetMapping("/{id}/request")
-    fun showJobRequest(@PathVariable id: UUID) = jobService.getJob(id).request
+    fun showJobRequest(@PathVariable id: UUID) = jobService.getJob(id).request!!
 
     @GetMapping("/{id}/results")
     fun listJobResultFormats(@PathVariable id: UUID) = jobService.getJob(id).fulfilledGoals

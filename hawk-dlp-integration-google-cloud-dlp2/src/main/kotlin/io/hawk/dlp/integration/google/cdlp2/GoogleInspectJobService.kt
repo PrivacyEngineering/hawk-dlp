@@ -66,7 +66,7 @@ class GoogleInspectJobService(
             .filter { it.occurrences.isNotEmpty() }
 
         job.completed(
-            job.request.goals
+            job.request!!.goals
                 .mapNotNull { it as? InspectGoal }
                 .map { it.copy(id = UUID.randomUUID()) }
                 .associateWith {

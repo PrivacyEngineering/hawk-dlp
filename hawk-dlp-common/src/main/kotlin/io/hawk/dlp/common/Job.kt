@@ -25,7 +25,7 @@ data class Job(
      * The request that was used to create this job.
      * Encapsulates the input data.
      */
-    @field:JsonIgnore val request: JobRequest,
+    @field:JsonIgnore val request: JobRequest? = null,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 

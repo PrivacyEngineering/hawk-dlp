@@ -108,7 +108,7 @@ class AmazonInspectJobService(
         val inspectResult = getFindings(job, listFindingsIds(job, macieJobId))
 
         job.completed(
-            job.request.goals
+            job.request!!.goals
                 .mapNotNull { it as? InspectGoal }
                 .map { it.copy(id = UUID.randomUUID()) }
                 .associateWith { inspectResult.copy(id = it.id!!) }
