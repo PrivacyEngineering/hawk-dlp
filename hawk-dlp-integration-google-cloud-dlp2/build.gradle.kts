@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.0.0"
-    id("io.spring.dependency-management") version "1.1.0"
+    id("org.springframework.boot") version "3.2.1"
+    id("io.spring.dependency-management") version "1.1.4"
     kotlin("jvm")
-    kotlin("plugin.spring") version "1.7.20"
+    kotlin("plugin.spring") version "1.9.21"
 }
 
 group = "io.hawk.dlp"
