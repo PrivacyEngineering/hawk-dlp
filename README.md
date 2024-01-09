@@ -11,6 +11,13 @@ implementation. The project consists of the following modules:
 - **hawk-dlp-integration-amazon-macie2** module containing the schema and endpoint implementation
   for Macie V2
 
+## Setup
+
+Either hawk-dlp-integration-google-cloud-dlp2 or hawk-dlp-integration-amazon-macie2
+must be started be to enable DLP.
+See [Google](/hawk-dlp-integration-google-cloud-dlp2/src/main/resources/application.properties)
+or [Amazon](/hawk-dlp-integration-amazon-macie2/src/main/resources/application.properties) for configuration setup.
+
 ## TODO
 
 - [X] Make `ColumnContainerOccurrence` only once per table-column tuple OR

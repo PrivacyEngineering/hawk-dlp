@@ -33,6 +33,5 @@ Accept: application/json
         "01701492567"
       ]
     ]
-  },
-  "sourceReference": "user-service"
+  }
 }

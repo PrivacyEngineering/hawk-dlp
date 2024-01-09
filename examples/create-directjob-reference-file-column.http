@@ -14,6 +14,5 @@ Accept: application/json
     "files": [
       "s3://macie-test-7789/testmacie.csv"
     ]
-  },
-  "sourceReference": "user-service"
+  }
 }
