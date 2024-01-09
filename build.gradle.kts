@@ -5,5 +5,5 @@ plugins {
 group = "io.hawk"
 
 allprojects {
-    version = "1.0.3"
+    version = "1.0.4"
 }

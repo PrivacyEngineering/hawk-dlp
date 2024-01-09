@@ -20,14 +20,16 @@ data class Job(
     /**
      * Time when this job was created.
      */
-    val created: LocalDateTime = LocalDateTime.now(),
+    val created: LocalDateTime = LocalDateTime.now()
+) {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     /**
      * The request that was used to create this job.
      * Encapsulates the input data.
      */
-    @field:JsonIgnore val request: JobRequest? = null,
-) {
-    private val logger = LoggerFactory.getLogger(javaClass)
+    @field:JsonIgnore
+    var request: JobRequest? = null
 
     /**
      * The status of this job.

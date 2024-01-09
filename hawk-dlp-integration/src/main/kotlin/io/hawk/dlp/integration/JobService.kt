@@ -22,7 +22,8 @@ class JobService(
     private val jobs: MutableMap<UUID, Job> = ConcurrentHashMap()
 
     fun createJob(request: JobRequest): Job {
-        val job = Job(request = request)
+        val job = Job()
+        job.request = request
         logger.info("Job[{}] created: {} {}", job.id, request.content.javaClass, request.goals)
         jobs[job.id] = job
 
