@@ -1,6 +1,7 @@
 package io.hawk.dlp.integration
 
 import io.hawk.dlp.common.Job
+import io.hawk.dlp.common.InspectResult
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -48,13 +49,15 @@ class HawkService {
             .subscribeOn(Schedulers.boundedElastic())
             .subscribe()
         job.results?.values?.forEach {
-            client.post()
-                .uri("/api/dlp/${job.id}/result")
-                .bodyValue(it)
-                .retrieve()
-                .bodyToMono(Void::class.java)
-                .subscribeOn(Schedulers.boundedElastic())
-                .subscribe()
+            if (it is InspectResult) {
+                client.post()
+                    .uri("/api/dlp/${job.id}/result/inspect")
+                    .bodyValue(it)
+                    .retrieve()
+                    .bodyToMono(Void::class.java)
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .subscribe()
+            }
         }
     }
 }
