@@ -18,6 +18,15 @@ must be started be to enable DLP.
 See [Google](/hawk-dlp-integration-google-cloud-dlp2/src/main/resources/application.properties)
 or [Amazon](/hawk-dlp-integration-amazon-macie2/src/main/resources/application.properties) for configuration setup.
 
+### Amazon Macie
+
+Start [aws macie demo](https://github.com/aws-samples/amazon-macie-demo-with-sample-data):
+```
+aws cloudformation create-stack --stack-name amazon-macie-demo \
+   --template-body file://macie.yaml \
+   --capabilities CAPABILITY_IAM
+```
+
 ## TODO
 
 - [X] Make `ColumnContainerOccurrence` only once per table-column tuple OR

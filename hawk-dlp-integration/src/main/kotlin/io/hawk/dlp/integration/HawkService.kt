@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
 import org.springframework.core.annotation.Order
+import org.springframework.http.MediaType
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
@@ -52,6 +53,7 @@ class HawkService {
             if (it is InspectResult) {
                 client.post()
                     .uri("/api/dlp/${job.id}/result/inspect")
+                    .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(it)
                     .retrieve()
                     .bodyToMono(Void::class.java)

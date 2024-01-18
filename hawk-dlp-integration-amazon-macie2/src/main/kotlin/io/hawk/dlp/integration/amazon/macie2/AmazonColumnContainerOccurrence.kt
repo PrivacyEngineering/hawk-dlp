@@ -2,14 +2,13 @@ package io.hawk.dlp.integration.amazon.macie2
 
 import com.amazonaws.services.macie2.model.Cell
 import com.amazonaws.services.macie2.model.ResourcesAffected
-import com.amazonaws.services.macie2.model.S3Bucket
-import com.amazonaws.services.macie2.model.S3Object
 import io.hawk.dlp.common.ColumnContainerOccurrence
 
 class AmazonColumnContainerOccurrence(
     resources: ResourcesAffected,
     cell: Cell,
 ): ColumnContainerOccurrence {
+    override val type: String
     override val container: String
     override val column: String
     override val volume: String
@@ -22,5 +21,6 @@ class AmazonColumnContainerOccurrence(
         filePath = resources.s3Object.path
         container = "s3://$volume/$filePath"
         column = cell.columnName
+        type = "container-column"
     }
 }

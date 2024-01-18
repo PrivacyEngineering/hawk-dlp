@@ -2,12 +2,8 @@ package io.hawk.dlp.integration.amazon.macie2
 
 import com.amazonaws.services.macie2.AmazonMacie2
 import com.amazonaws.services.macie2.model.*
+import io.hawk.dlp.common.*
 import io.hawk.dlp.common.Finding
-import io.hawk.dlp.common.InspectResult
-import io.hawk.dlp.common.FileReferenceContent
-import io.hawk.dlp.common.InspectGoal
-import io.hawk.dlp.common.Job
-import io.hawk.dlp.common.JobStatus
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
@@ -27,7 +23,7 @@ class AmazonInspectJobService(
     private val logger = LoggerFactory.getLogger(javaClass)
     private val macieJobsLock = ReentrantLock()
     private val macieJobs = ConcurrentHashMap<String, Job>()
-    private val bucketFilePathRegex = Regex("^s3://([A-Za-z-0-9.,_]+).*$")
+    private val bucketFilePathRegex = Regex("^s3://([A-Za-z-0-9.,_-]+).*$")
     @Value("\${hawk.amazon.macie2.account-id}")
     lateinit var accountId: String
 
@@ -44,9 +40,11 @@ class AmazonInspectJobService(
         val bucketNames = reference.files.mapNotNull {
             bucketFilePathRegex.matchEntire(it)?.groupValues?.getOrNull(1)
         }
+        logger.debug("Bucket names {}", bucketNames)
         val request = CreateClassificationJobRequest()
             .withName("Hawk ${job.id}")
             .withJobType(JobType.ONE_TIME)
+            .withManagedDataIdentifierSelector(ManagedDataIdentifierSelector.ALL)
             .withS3JobDefinition(
                 S3JobDefinition()
                     .withBucketDefinitions(
@@ -144,7 +142,7 @@ class AmazonInspectJobService(
                 additionalOccurrences = true
 
             it.classificationDetails.result.sensitiveData.flatMap { data ->
-                data.detections.map { detection ->
+                data.detections.mapNotNull { detection ->
                     convertFinding(
                         resourcesAffected,
                         severity,
@@ -166,14 +164,22 @@ class AmazonInspectJobService(
         resourcesAffected: ResourcesAffected,
         severity: Long,
         detection: DefaultDetection
-    ) = Finding(
-        UUID.randomUUID(),
-        infoTypeService.translateAmazonInfoType(detection.type),
-        null,
-        detection.occurrences
-            .cells
-            .map { AmazonColumnContainerOccurrence(resourcesAffected, it) }
-            .distinctBy { it.container + it.column },
-        mapOf("severity" to severity)
-    )
+    ): Finding? {
+        val occurrences = detection.occurrences
+        if (occurrences.cells == null) {
+            logger.warn("{} has no cells in occurrences", detection)
+            return null;
+        }
+        // csv file
+        return Finding(
+            UUID.randomUUID(),
+            infoTypeService.translateAmazonInfoType(detection.type),
+            null,
+            detection.occurrences
+                .cells
+                .map { AmazonColumnContainerOccurrence(resourcesAffected, it) }
+                .distinctBy { it.container + it.column },
+            mapOf("severity" to severity)
+        )
+    }
 }

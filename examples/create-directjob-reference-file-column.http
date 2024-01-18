@@ -1,4 +1,4 @@
-POST http://127.0.0.1:8080/api/v1/jobs/direct
+POST http://127.0.0.1:8081/api/v1/jobs/direct
 Content-Type: application/json
 Accept: application/json
 
@@ -12,7 +12,7 @@ Accept: application/json
   "content": {
     "type": "reference-file",
     "files": [
-      "s3://macie-test-7789/testmacie.csv"
+      "s3://macie-data-471472241282-eu-central-1/hawk-dlp-example.csv"
     ]
   }
 }
