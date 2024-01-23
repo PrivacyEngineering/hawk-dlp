@@ -12,14 +12,14 @@ import com.fasterxml.jackson.annotation.JsonInclude
  * Subclasses may add properties to locate the specific data inside this table / file etc.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-interface ContainerOccurrence : Occurrence {
-    override val type: String get() = "container"
+open class ContainerOccurrence (
+    override val type: String = "container",
 
     /**
      * A vendor specific locator for the container represented as a string.
      * e.g. gs://test-bucket/folder1/test.csv, or gproject.testdb.users
      */
-    val container: String
+    val container: String,
 
     /**
      * Part of the [container], that describes the location where the file (system) of the file is
@@ -29,7 +29,7 @@ interface ContainerOccurrence : Occurrence {
      *
      * Only present if the occurrence represents a file.
      */
-    val volume: String?
+    val volume: String?,
 
     /**
      * Part of the [container], that describes the path of the file in the respective volume.
@@ -38,7 +38,7 @@ interface ContainerOccurrence : Occurrence {
      *
      * Only present if the occurrence represents a file.
      */
-    val filePath: String?
+    val filePath: String?,
 
     /**
      * Part of the [container], that describes the database / the prefix of the table.
@@ -48,7 +48,7 @@ interface ContainerOccurrence : Occurrence {
      *
      * Only present if the occurrence represents a database.
      */
-    val database: String?
+    val database: String?,
 
     /**
      * Part of the [container], that describes the name of the table.
@@ -58,4 +58,4 @@ interface ContainerOccurrence : Occurrence {
      * Only present if the occurrence represents a database.
      */
     val table: String?
-}
+): Occurrence

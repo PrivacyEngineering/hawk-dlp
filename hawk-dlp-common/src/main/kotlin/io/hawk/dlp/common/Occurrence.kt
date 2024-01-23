@@ -13,12 +13,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
  */
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
     property = "type"
 )
 @JsonSubTypes(
-    JsonSubTypes.Type(value = ContainerOccurrenceImpl::class, name = "container"),
-    JsonSubTypes.Type(value = ColumnContainerOccurrenceImpl::class, name = "container-column")
+    JsonSubTypes.Type(value = ContainerOccurrence::class, name = "container"),
+    JsonSubTypes.Type(value = ColumnContainerOccurrence::class, name = "container-column")
 )
 interface Occurrence {
     /**
