@@ -56,6 +56,7 @@ data class Job(
     val fulfilledGoals: List<Goal> get() = results?.keys?.toList() ?: emptyList()
 
     @Transient
+    @get:JsonIgnore
     val statusListeners = mutableListOf<(job: Job) -> Unit>()
 
     fun begin() {

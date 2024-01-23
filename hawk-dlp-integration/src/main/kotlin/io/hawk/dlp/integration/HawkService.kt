@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
 import org.springframework.core.annotation.Order
 import org.springframework.http.MediaType
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.scheduler.Schedulers
@@ -44,22 +43,29 @@ class HawkService {
     private fun notifyHawkService(job: Job) {
         client.post()
             .uri("/api/dlp")
+            .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(job)
             .retrieve()
-            .bodyToMono(Void::class.java)
+            .toEntity(Void::class.java)
             .subscribeOn(Schedulers.boundedElastic())
-            .subscribe()
-        job.results?.values?.forEach {
-            if (it is InspectResult) {
-                client.post()
-                    .uri("/api/dlp/${job.id}/result/inspect")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(it)
-                    .retrieve()
-                    .bodyToMono(Void::class.java)
-                    .subscribeOn(Schedulers.boundedElastic())
-                    .subscribe()
+            .doOnSuccess { responseEntity ->
+                if (responseEntity.statusCode.isError) {
+                    logger.error("Could not notify hawk service: {}", responseEntity.body)
+                    return@doOnSuccess
+                }
+                job.results?.values?.forEach {
+                    if (it is InspectResult) {
+                        client.post()
+                            .uri("/api/dlp/${job.id}/result/inspect")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue(it)
+                            .retrieve()
+                            .bodyToMono(Void::class.java)
+                            .subscribeOn(Schedulers.boundedElastic())
+                            .subscribe()
+                    }
+                }
             }
-        }
+            .subscribe()
     }
 }
